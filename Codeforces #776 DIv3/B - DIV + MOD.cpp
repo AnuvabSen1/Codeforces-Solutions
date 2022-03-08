@@ -114,7 +114,8 @@ int check(int mid)
     rep1(i,0,n)
     {
         sum += a[i];
-        if(sum == pref[mid]){
+        rep6(sum,pref[mid])
+        {
             count++;
             sum = 0;
         }
@@ -129,41 +130,42 @@ int check(int mid)
     return count;
 }
 
-void anuvab()
+vector<long long> vp;
+void pre()
 {
-    long long n;
-    cin >> n;
-    long long a[n + 2];
-    rep1(i,0,n){
-        cin >> a[i];
-    }
-    sort(a, a + n);
-    long long f = a[0] + a[1];
-    long long s = a[n - 1];
-    long long p2 = n - 2;
-    long long p1 = 2;
-    while (p1 < p2){
-        s += a[p2];
-        f += a[p1];
-        p2--;
-        p1++;
-    }
-    if(s > f)
+    ll start = 1;
+    rep3(i,1,30)
     {
-        print("YES");
-        return;
+        start = start*i;
+        vp.push_back(start);
     }
-    else cout << "NO"<<endl;
-
+}
+void solve()
+{
+    long long x;
+    long long y;
+    long long z;
+    cin>>x>>y>>z;
+    long long q = y %z;
+    long long hmm = y/z + q;
+    long long h = y - (q+ 1);
+    
+    long long r =0;
+    if(x<=h&&h<=y)
+    {
+        hmm = max(hmm,h/z + h%z);
+        r++;
+    }print(hmm);
 }
 
 signed main()
 {
     int t;
     cin>>t;
+    pre();
     while(t--)
     {
-        anuvab();
+        solve();
     }
     return 0;
 }
