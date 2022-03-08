@@ -103,32 +103,6 @@ using namespace std;
 #include<ext/pb_ds/tree_policy.hpp>
 #define ordered_set tree<int , null_type,less<int>, rb_tree_tag,tree_order_statistics_node_update>
 using namespace __gnu_pbds;
-const int N=2e5+10;
-
-int pref[N], a[N];
-int n;
-int check(int mid)
-{
-    long long int sum = 0;
-    long long int count = 0;
-    rep1(i,0,n)
-    {
-        sum += a[i];
-        rep6(sum,pref[mid])
-        {
-            count++;
-            sum = 0;
-        }
-        else if(sum > pref[mid]){
-            count = -1;
-            break;
-        }
-    }
-    if(sum > 0){
-        count = -1;
-    }
-    return count;
-}
 
 vector<long long> vp;
 void pre()
@@ -140,50 +114,85 @@ void pre()
         vp.push_back(start);
     }
 }
-void solve()
+
+template<typename T> // cin >> vector<T>
+istream& operator>>(istream &istream, vector<T> &v)
+{
+ for (auto &it : v)
+  cin >> it;
+ return istream;
+}
+ll distance(vector<ll>&arr){
+    sort(arr.begin(),arr.end());
+    ll res = 0, sum = 0;
+    for (ll i = 0; i < arr.size(); i++) {
+        res += (arr[i] * i - sum);
+        sum += arr[i];
+    }
+ 
+    return res;
+}
+
+long long cache[10020][2][2];
+int N;
+long long A[10020];
+
+long long dp(int i, bool j, bool k)
+{
+    if (i >= N){
+    return 0;
+    }
+    if (cache[i][j][k] != 1e18){
+    return cache[i][j][k];
+    }
+    long long val = A[i];
+    if ((j + k) & 1){
+        val *= -1;
+    }
+    return cache[i][j][k] = max(dp(i + 1, !j, k) + val, dp(i + 1, 1, !k) + val);
+}
+
+void anuvab()
 {
     long long n;
-    cin >> n;
-    long long res = n;
-    long long p = pow(2,15);
-    rep3(i,0,p)
+    long long m;
+    long long x;
+    long long w;
+    cin>>n>>m;
+    map <long long,long long> M;
+    vector <pair<long long,long long>> v;
+    vector <ll> vv;
+    long long s =0;
+    rep1(i,0,m)
     {
-        long long temp = 0;
-        long long temp_res = 0;
-        rep3(j,0,20)
-        {
-            long long cand = 1<<j;
-            if(cand & i){
-                temp++;
-                temp_res += vp[j];
-            }
-        }
-        ll cnt = 0;
-        ll x = n-temp_res;
-        while(x)
-        {
-            if(x&1)
-            {
-                cnt++;
-            }
-            x/=2;
-        }
-        if(temp_res<=n)
-        {
-            res = min(res,temp+cnt);
-        }
+        s++;
+        cin>>x>>w;
+        M[x]=i+1;
+        v.push_back({w,x});
     }
-    cout << res<<endl;
+    sort(v.begin(),v.end());
+    long long sum=0;
+    rep1(i,0, 2*n)
+    {
+        sum+=v[i].first;
+        vv.push_back(v[i].second);
+    }
+    sort(vv.begin(),vv.end());
+    print(sum);
+    long long r =0;
+    rep1(i,0,n)
+    {
+        r++;
+        cout<<M[vv[i]]<<" "<<M[vv[2*n -i -1]]<<endl;
+    }
 }
 
 signed main()
 {
     int t;
     cin>>t;
-    pre();
     while(t--)
     {
-        solve();
+        anuvab();
     }
-    return 0;
 }
